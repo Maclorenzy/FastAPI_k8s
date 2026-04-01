@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fastapi-prod
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    environment: production
+    project: fastapi-fullstack
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Maclorenzy/FastAPI_k8s
+    targetRevision: main
+    path: overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fastapi-prod
+  # PROD : sync automatique DÉSACTIVÉ
+  # Chaque déploiement prod doit être déclenché manuellement
+  # via : argocd app sync fastapi-prod
+  # OU en décommentant le bloc automated ci-dessous
+  syncPolicy:
+    # automated:
+    #   prune: true
+    #   selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  revisionHistoryLimit: 10          # Plus d'historique en prod pour rollback
+  info:
+    - name: URL
+      value: https://fastapi_prod.laurenthoarau.cloud-ip.cc

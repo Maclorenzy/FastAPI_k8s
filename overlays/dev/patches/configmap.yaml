@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+data:
+  env: "development"
+  access_token_expire_minutes: "120"
+  log_level: "debug"

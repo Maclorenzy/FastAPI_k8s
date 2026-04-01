@@ -1,0 +1,10 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: adminer-basicauth
+  namespace: fastapi-prod
+spec:
+  basicAuth:
+    secret: adminer-auth-secret
+    realm: "Adminer Production — Restricted"
+    removeHeader: true

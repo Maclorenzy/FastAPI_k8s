@@ -1,0 +1,32 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: app-ingress
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`fastapi_prod.laurenthoarau.cloud-ip.cc`)
+      kind: Rule
+      services:
+        - name: frontend
+          port: 80
+      priority: 1
+    - match: Host(`fastapi_prod.laurenthoarau.cloud-ip.cc`) && PathPrefix(`/api`)
+      kind: Rule
+      middlewares:
+        - name: strip-api-prefix
+      services:
+        - name: backend
+          port: 8000
+      priority: 10
+    - match: Host(`fastapi_prod.laurenthoarau.cloud-ip.cc`) && PathPrefix(`/adminer`)
+      kind: Rule
+      middlewares:
+        - name: adminer-basicauth
+      services:
+        - name: adminer
+          port: 8080
+      priority: 10
+  tls:
+    secretName: tls-prod-cert

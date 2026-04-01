@@ -1,0 +1,33 @@
+# IngressRoute Traefik v3 (syntaxe mise à jour)
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: app-ingress
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`PLACEHOLDER_DOMAIN`)
+      kind: Rule
+      services:
+        - name: frontend
+          port: 80
+      priority: 1
+
+    - match: Host(`PLACEHOLDER_DOMAIN`) && PathPrefix(`/api`)
+      kind: Rule
+      middlewares:
+        - name: strip-api-prefix
+      services:
+        - name: backend
+          port: 8000
+      priority: 10
+
+    - match: Host(`PLACEHOLDER_DOMAIN`) && PathPrefix(`/adminer`)
+      kind: Rule
+      services:
+        - name: adminer
+          port: 8080
+      priority: 10
+  tls:
+    secretName: tls-app-cert

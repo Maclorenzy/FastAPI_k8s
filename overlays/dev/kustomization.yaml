@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: fastapi-dev
+
+resources:
+  - ../../base
+  - namespace.yaml
+  - certificate.yaml
+
+patches:
+  - path: patches/configmap.yaml
+    target:
+      kind: ConfigMap
+      name: backend-config
+  - path: patches/ingressroute.yaml
+    target:
+      kind: IngressRoute
+      name: app-ingress
+
+images:
+  - name: maclorenzy/fastapi-backend
+    newTag: dev-latest
+  - name: maclorenzy/fastapi-frontend
+    newTag: dev-latest
