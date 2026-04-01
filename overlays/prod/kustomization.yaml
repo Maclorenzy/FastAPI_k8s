@@ -28,6 +28,4 @@ images:
     newTag: prod-latest
   - name: maclorenzy/fastapi-frontend
     newTag: prod-latest
-```
 
----
